@@ -92,6 +92,7 @@
       margin-bottom: 1rem;
       background-color: #93b0fb;
       padding-inline-start: 0;
+      min-height: 500px;
     }
 
     li {
@@ -110,6 +111,15 @@
     li p {
       line-height: 1.5;
       margin: 0.5rem 0;
+    }
+
+    li > label {
+      float: right;
+      margin-right: 3rem;
+    }
+
+    li > p:nth-child(2) {
+      display: inline-block;
     }
 
     /* ul li {
@@ -149,7 +159,6 @@
     }
 
     input {
-      height: 45px;
       padding: 10px 16px;
       font-size: 18px;
       line-height: 1.3;
@@ -183,10 +192,15 @@
 
     .text-muted {
       color: #999;
+      background-color: #e2e2e2;
     }  
 
     .bold {
       font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
     }
 
     button#logTask {
@@ -276,6 +290,7 @@
         constructor(task, dueDate, id) {
           this.task = task;
           this.dueDate = dueDate;
+          this.completed = false;
           this.ID = id;       
         }
       }
@@ -288,9 +303,24 @@
         taskList.push(task);
         let reformattedDate = reformatDate(dueDate);
         let taskDisplay = `<li><p><span class="bold">Task: </span>${taskValue}</p>
-          <p><span class="bold">Due date: </span>${reformattedDate}</p></li>`;
+          <p><span class="bold">Due date: </span>${reformattedDate}</p>
+          <span class="hidden">${id}</span>
+          <label>Completed: <input type="checkbox"></label></li>`;
         $("ul").prepend(taskDisplay);
-      })
+      });
+      //Function to change style of task list item based on status from checkbox input:
+      $("ul").on("click", "li input", function (){
+        let taskID = $(this).parent().siblings("span.hidden").text();
+        let selectedTask = taskList.find(taskItem => taskItem.ID == taskID);
+        if ($(this).prop("checked")) {
+          $(this).parents("li").addClass("text-muted");         
+          selectedTask.completed = true;
+        } else {
+          $(this).parents("li").removeClass("text-muted");         
+          selectedTask.completed = false;
+        }
+      });
+      //-----------------------------
     });
   </script>
 </body>
