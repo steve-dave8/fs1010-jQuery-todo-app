@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>jQuery To-Do Application</title>
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://kit.fontawesome.com/74b8d29616.js" crossorigin="anonymous"></script>
   <style>
     article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary {display:block;}
     
@@ -182,12 +182,21 @@
     }
 
     .alert {
-      color: #b94a48;
-      background-color: #f2dede;
-      border: 1px solid #eed3d7;
+      border: 3px solid #b94a48;
       padding: 15px;
-      margin-bottom: 20px;
       border-radius: 4px;
+    }
+
+    .alertInfo {
+      display: inline-block;
+    }
+
+    .alertInfo::before {
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      content: "\f071 please input a task";
+      color: #9e0c0c;
+      font-size: 1rem;
     }
 
     .text-muted {
@@ -210,7 +219,7 @@
     }
 
     button#logTask:hover {
-      background-color: aquamarine;
+      background-color: #f1f1b8;
     }
   </style>
 </head>
@@ -220,12 +229,13 @@
     <div class="container">
       
       <div class="page-header"> 
-        <h1>jQuery To-Do Application</h1>
+        <h1>jQuery To-Do App</h1>
       </div>
 
       <form>
         <label for="newTask">New task: </label>
         <input id="newTask" class="form-control" type="text" placeholder="Add an item..." name="task">
+        <span></span>
         <br>
         <label for="dueDate">Due date: </label>
         <input id="dueDate" type="date" name="due-date" value="">
@@ -294,9 +304,17 @@
           this.ID = id;       
         }
       }
-
+      
       $("button#logTask").click(function (){
         let taskValue = $("input#newTask").val();
+        $("input#newTask").removeClass("alert");
+        $("input#newTask~span").removeClass("alertInfo");
+        //If task field is empty then display alert and stop the function:
+        if (taskValue.trim() == "") {
+          $("input#newTask").addClass("alert");
+          $("input#newTask~span").addClass("alertInfo");
+          return;
+        }
         id++;
         let dueDate = $("input#dueDate").val();
         let task = new Task(taskValue, dueDate, id);
