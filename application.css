@@ -23,11 +23,37 @@ input::-moz-focus-inner {
     line-height: 1.2;
   }
 
+  aside {
+    z-index: 10;
+    position: sticky;
+    top: 30vh;
+    float: left;
+    background-color: #93b0fb;
+    width: 100px;
+  }
+
+  aside > p {
+    text-align: center;
+    margin: 0.5rem auto;
+    padding: 0.5rem 0;
+    background-color: #f1f1b8;
+    width: 90%;
+    border: 2px solid black;
+  }
+
+  aside > button {
+    border: 1px solid black;
+    width: 90%;
+    padding: 5px 0;
+    margin: 0 auto 5px;
+  }
+
   button {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
     margin: 0;
+    display: block;
   }
 
   ul {
