@@ -14,8 +14,8 @@
   <aside>
     <p>Sort by:</p>
     <button type="button" id="sortDate">due date</button>
-    <button type="button">first added</button>
-    <button type="button">last added</button>
+    <button type="button" id="sortByFirst">first added</button>
+    <button type="button" id="sortByLast">last added</button>
   </aside>
   <main>
     <div class="container">
@@ -56,6 +56,22 @@
           <label>Completed: <input type="checkbox"></label></li>`;
       return taskItem;
     };
+
+    const renderList = (taskList) => {
+      taskList.forEach(taskItem => {
+          let taskValue = taskItem.task;
+          let dueDate = taskItem.dueDate;
+          let id = taskItem.ID;
+          let taskDisplay = renderTask(taskValue, dueDate, id);
+          $("ul").append(taskDisplay).find("li:last-child").addClass(function (){
+            if (taskItem.completed === true) {
+              $(this).children("label").children("input").prop("checked", true);
+              let addedClass = "text-muted";
+              return addedClass;
+            }
+          });
+        });
+    }
 
     //Function to reformat the standard date string format of YYYY-MM-DD :
     let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -146,22 +162,29 @@
       //-----------------------------
       //Function to sort task items by due date:
       $("button#sortDate").on("click", function (){
+        $("aside > button").removeClass("activeSort");
         $(this).addClass("activeSort");
         $("ul").empty();
         taskList.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
-        taskList.forEach(taskItem => {
-          let taskValue = taskItem.task;
-          let dueDate = taskItem.dueDate;
-          let id = taskItem.ID;
-          let taskDisplay = renderTask(taskValue, dueDate, id);
-          $("ul").append(taskDisplay).find("li:last-child").addClass(function (){
-            if (taskItem.completed === true) {
-              $(this).children("label").children("input").prop("checked", true);
-              let addedClass = "text-muted";
-              return addedClass;
-            }
-          });
-        });
+        renderList(taskList);
+      });
+      //-----------------------------
+      //Function to sort task items by first added:
+      $("button#sortByFirst").on("click", function (){
+        $("aside > button").removeClass("activeSort");
+        $(this).addClass("activeSort");
+        $("ul").empty();
+        taskList.sort((a, b) => a.ID - b.ID);
+        renderList(taskList);
+      });
+      //-----------------------------
+      //Function to sort task items by last added:
+      $("button#sortByLast").on("click", function (){
+        $("aside > button").removeClass("activeSort");
+        $(this).addClass("activeSort");
+        $("ul").empty();
+        taskList.sort((a, b) => b.ID - a.ID);
+        renderList(taskList);
       });
       //-----------------------------
     });
