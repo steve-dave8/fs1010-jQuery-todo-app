@@ -22,7 +22,7 @@ input::-moz-focus-inner {
     font-weight: 600;
     line-height: 1.2;
   }
-
+  /*Styles for sorting options' menu*/
   aside {
     z-index: 10;
     position: sticky;
@@ -48,12 +48,21 @@ input::-moz-focus-inner {
     margin: 0 auto 5px;
   }
 
+  .activeSort {
+    background-color: aquamarine;
+  }
+  /*----------------------------------*/
   button {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
     margin: 0;
     display: block;
+  }
+
+  button:hover {
+    background-color: #f1f1b8;
+    cursor: pointer;
   }
 
   ul {
@@ -179,8 +188,4 @@ input::-moz-focus-inner {
   button#logTask {
     margin: 1rem 0;
     border-radius: 5px;
-  }
-
-  button#logTask:hover {
-    background-color: #f1f1b8;
   }

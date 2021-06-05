@@ -13,7 +13,7 @@
 <body>
   <aside>
     <p>Sort by:</p>
-    <button type="button">due date</button>
+    <button type="button" id="sortDate">due date</button>
     <button type="button">first added</button>
     <button type="button">last added</button>
   </aside>
@@ -48,6 +48,40 @@
   </script>
 
   <script>
+    //Utility functions:
+    const renderTask = (taskValue, date, id) => {
+      let taskItem = `<li><p><span class="bold">Task: </span>${taskValue}</p>
+          <p><span class="bold">Due date: </span>${date}</p>
+          <span class="hidden">${id}</span>
+          <label>Completed: <input type="checkbox"></label></li>`;
+      return taskItem;
+    };
+
+    //Function to reformat the standard date string format of YYYY-MM-DD :
+    let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const reformatDate = (date) => {
+      let [yyyy, mm, dd] = date.split("-");
+      if (mm.charAt(0) == 0) {
+        mm = mm.slice(1);
+      }
+      if (dd.charAt(0) == 0) {
+        dd = dd.slice(1);
+      }
+      mm = monthList[mm-1];
+      let revdate = `${mm} ${dd}, ${yyyy}`;
+      return revdate;
+    };
+
+    //Constructor for task object:
+    class Task {
+      constructor(task, dueDate, id) {
+        this.task = task;
+        this.dueDate = dueDate;
+        this.completed = false;
+        this.ID = id;       
+      }
+    };
+    //end of utility functions----------------------------------------------------------
     $(document).ready(function() {
       $("input#newTask").focus();
       //Set date input placeholder:
@@ -70,32 +104,13 @@
         };      
       });
       //-----------------------------
-      //Function to reformat the standard date string format of YYYY-MM-DD :
-      let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      const reformatDate = (date) => {
-        let [yyyy, mm, dd] = date.split("-");
-        if (mm.charAt(0) == 0) {
-          mm = mm.slice(1);
-        }
-        if (dd.charAt(0) == 0) {
-          dd = dd.slice(1);
-        }
-        mm = monthList[mm-1];
-        let revdate = `${mm} ${dd}, ${yyyy}`;
-        return revdate;
-      }
-      //-----------------------------
-      let taskList = [];
-      let id = 0;
-
-      class Task {
-        constructor(task, dueDate, id) {
-          this.task = task;
-          this.dueDate = dueDate;
-          this.completed = false;
-          this.ID = id;       
-        }
-      }
+      let taskList = [
+        {task: "Example 1", dueDate: "June 20, 2021", completed: false, ID: 1},
+        {task: "Example 2", dueDate: "July 30, 2021", completed: false, ID: 2},
+        {task: "Example 3", dueDate: "July 2, 2021", completed: true, ID: 3},
+        {task: "Example 4", dueDate: "July 15, 2021", completed: false, ID: 4},
+      ];
+      let id = 4;
       
       $("button#logTask").click(function (){
         let taskValue = $("input#newTask").val();
@@ -107,15 +122,13 @@
           $("input#newTask~span").addClass("alertInfo");
           return;
         }
+        $("aside > button").removeClass("activeSort");
         id++;
         let dueDate = $("input#dueDate").val();
-        let task = new Task(taskValue, dueDate, id);
-        taskList.push(task);
         let reformattedDate = reformatDate(dueDate);
-        let taskDisplay = `<li><p><span class="bold">Task: </span>${taskValue}</p>
-          <p><span class="bold">Due date: </span>${reformattedDate}</p>
-          <span class="hidden">${id}</span>
-          <label>Completed: <input type="checkbox"></label></li>`;
+        let task = new Task(taskValue, reformattedDate, id);
+        taskList.push(task);     
+        let taskDisplay = renderTask(taskValue, reformattedDate, id);
         $("ul").prepend(taskDisplay);
       });
       //Function to change style of task list item based on status from checkbox input:
@@ -129,6 +142,26 @@
           $(this).parents("li").removeClass("text-muted");         
           selectedTask.completed = false;
         }
+      });
+      //-----------------------------
+      //Function to sort task items by due date:
+      $("button#sortDate").on("click", function (){
+        $(this).addClass("activeSort");
+        $("ul").empty();
+        taskList.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
+        taskList.forEach(taskItem => {
+          let taskValue = taskItem.task;
+          let dueDate = taskItem.dueDate;
+          let id = taskItem.ID;
+          let taskDisplay = renderTask(taskValue, dueDate, id);
+          $("ul").append(taskDisplay).find("li:last-child").addClass(function (){
+            if (taskItem.completed === true) {
+              $(this).children("label").children("input").prop("checked", true);
+              let addedClass = "text-muted";
+              return addedClass;
+            }
+          });
+        });
       });
       //-----------------------------
     });
