@@ -11,6 +11,12 @@
 </head>
 
 <body>
+  <aside>
+    <p>Sort by:</p>
+    <button type="button" id="sortDate">due date</button>
+    <button type="button" id="sortByFirst">first added</button>
+    <button type="button" id="sortByLast">last added</button>
+  </aside>
   <main>
     <div class="container">
       
@@ -40,93 +46,7 @@
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
     crossorigin="anonymous">
   </script>
-
-  <script>
-    $(document).ready(function() {
-      $("input#newTask").focus();
-      //Set date input placeholder:
-      let today = new Date();
-      let month = today.getMonth()+1;
-      if (month < 10) {
-        month = `0${month}`;
-      }
-      let day = today.getDate();
-      if (day < 10) {
-        day = `0${day}`;
-      }
-      let todaysDate = `${today.getFullYear()}-${month}-${day}`;
-      $("input#dueDate").attr("value", todaysDate);
-      //-----------------------------
-      //While in task input field, prevent pressing Enter key from submitting the form and refreshing the page:
-      $("input#newTask").keydown(function (event){
-        if (event.which == 13) {
-          event.preventDefault();
-        };      
-      });
-      //-----------------------------
-      //Function to reformat the standard date string format of YYYY-MM-DD :
-      let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      const reformatDate = (date) => {
-        let [yyyy, mm, dd] = date.split("-");
-        if (mm.charAt(0) == 0) {
-          mm = mm.slice(1);
-        }
-        if (dd.charAt(0) == 0) {
-          dd = dd.slice(1);
-        }
-        mm = monthList[mm-1];
-        let revdate = `${mm} ${dd}, ${yyyy}`;
-        return revdate;
-      }
-      //-----------------------------
-      let taskList = [];
-      let id = 0;
-
-      class Task {
-        constructor(task, dueDate, id) {
-          this.task = task;
-          this.dueDate = dueDate;
-          this.completed = false;
-          this.ID = id;       
-        }
-      }
-      
-      $("button#logTask").click(function (){
-        let taskValue = $("input#newTask").val();
-        $("input#newTask").removeClass("alert");
-        $("input#newTask~span").removeClass("alertInfo");
-        //If task field is empty then display alert and stop the function:
-        if (taskValue.trim() == "") {
-          $("input#newTask").addClass("alert");
-          $("input#newTask~span").addClass("alertInfo");
-          return;
-        }
-        id++;
-        let dueDate = $("input#dueDate").val();
-        let task = new Task(taskValue, dueDate, id);
-        taskList.push(task);
-        let reformattedDate = reformatDate(dueDate);
-        let taskDisplay = `<li><p><span class="bold">Task: </span>${taskValue}</p>
-          <p><span class="bold">Due date: </span>${reformattedDate}</p>
-          <span class="hidden">${id}</span>
-          <label>Completed: <input type="checkbox"></label></li>`;
-        $("ul").prepend(taskDisplay);
-      });
-      //Function to change style of task list item based on status from checkbox input:
-      $("ul").on("click", "li input", function (){
-        let taskID = $(this).parent().siblings("span.hidden").text();
-        let selectedTask = taskList.find(taskItem => taskItem.ID == taskID);
-        if ($(this).prop("checked")) {
-          $(this).parents("li").addClass("text-muted");         
-          selectedTask.completed = true;
-        } else {
-          $(this).parents("li").removeClass("text-muted");         
-          selectedTask.completed = false;
-        }
-      });
-      //-----------------------------
-    });
-  </script>
+  <script type="text/javascript" src="application.js"></script>
 </body>
 
 </html>
