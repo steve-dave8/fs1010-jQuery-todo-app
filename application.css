@@ -18,16 +18,16 @@ input::-moz-focus-inner {
   }
 
   h1 {
-    font-size: 2em;
-    font-weight: 600;
-    line-height: 1.2;
+    font-size: 48px;
+    line-height: 1;
+    color: inherit;
   }
   /*Styles for sorting options' menu*/
   aside {
     z-index: 10;
     position: sticky;
     top: 30vh;
-    float: left;
+    float: right;
     background-color: #93b0fb;
     width: 100px;
   }
@@ -87,7 +87,6 @@ input::-moz-focus-inner {
   }
 
   li p {
-    line-height: 1.5;
     margin: 0.5rem 0;
   }
 
@@ -98,6 +97,7 @@ input::-moz-focus-inner {
 
   li > p:nth-child(2) {
     display: inline-block;
+    line-height: 1;
   }
 
   /* ul li {
@@ -106,18 +106,11 @@ input::-moz-focus-inner {
 
   main {
     padding: 30px;
-    margin-bottom: 30px;
     font-size: 21px;
     font-weight: 200;
     line-height: 2.1;
     color: inherit;
     background-color: #eee;
-  }
-
-  main h1 {
-    font-size: 63px;
-    line-height: 1;
-    color: inherit;
   }
 
   .container {
@@ -127,12 +120,11 @@ input::-moz-focus-inner {
   }
 
   .page-header {
-    margin: 40px 0 20px;
+    margin: 20px 0;
     border-bottom: 5px solid #363636;
   }
 
   input {
-    padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3;
     border-radius: 6px;
@@ -188,4 +180,40 @@ input::-moz-focus-inner {
   button#logTask {
     margin: 1rem 0;
     border-radius: 5px;
+    font-size: 1rem;
   }
+
+  .deleteBtn {
+    color: white;
+    background-color: #ff6f53;
+    font-size: 0.8rem;
+    padding: 0 5px;
+    border: 1px solid black;
+    margin: 0 auto;
+  }
+
+  .deleteBtn:hover {
+    color: black;
+    background-color: #ff6f53;
+  }
+
+@media (max-width: 750px) {
+    aside {
+        font-size: 0.8rem;
+    }
+    main {
+        font-size: 1rem;
+    }
+    li > p:nth-child(2) {
+        line-height: 2;
+    }
+}
+
+@media (max-width: 550px) {
+    .deleteBtn {
+        margin: 1rem 0;
+    }
+    li > p:nth-child(2) {
+        display: block;
+    }
+}

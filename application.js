@@ -14,7 +14,8 @@ const renderTask = (taskValue, date, id) => {
   let taskItem = `<li><p><span class="bold">Task: </span>${taskValue}</p>
       <p><span class="bold">Due date: </span>${date}</p>
       <span class="hidden">${id}</span>
-      <label>Completed: <input type="checkbox"></label></li>`;
+      <label>Completed: <input type="checkbox"></label>
+      <button type="button" class="deleteBtn">Delete Task</button></li>`;
   return taskItem;
 };
 
