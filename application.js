@@ -2,9 +2,9 @@
 let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 let taskList = [
     {task: "Example 1", dueDate: "June 20, 2021", completed: false, ID: 1},
-    {task: "Example 2", dueDate: "July 30, 2021", completed: false, ID: 2},
+    {task: "Example 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae semper dolor. Sed venenatis ligula ac odio lacinia blandit. Nullam imperdiet ex sed ultrices aliquet. Morbi vel turpis lobortis, faucibus nibh non, malesuada nibh.", dueDate: "July 30, 2021", completed: false, ID: 2},
     {task: "Example 3", dueDate: "July 2, 2021", completed: true, ID: 3},
-    {task: "Example 4", dueDate: "July 15, 2021", completed: false, ID: 4},
+    {task: "Example 4. UI fire up your browser we need to build it so that it scales it's not hard guys. This proposal is a win-win situation which will cause a stellar paradigm shift, and produce a multi-fold increase in deliverables pulling teeth, yet re-inventing the wheel.", dueDate: "July 15, 2021", completed: false, ID: 4},
   ];
   let id = 4;
 //-----------------------------
@@ -87,6 +87,7 @@ $(document).ready(function() {
   });
   //----------------------------- 
 
+  //Take form input, display it in the list, and add the data to taskList array:
   $("button#logTask").click(function (){
     let taskValue = $("input#newTask").val();
     $("input#newTask").removeClass("alert");
@@ -106,6 +107,7 @@ $(document).ready(function() {
     let taskDisplay = renderTask(taskValue, reformattedDate, id);
     $("ul").prepend(taskDisplay);
   });
+  //-----------------------------
 
   //Change style of task list item based on status from checkbox input:
   $("ul").on("click", "li input", function (){
@@ -118,6 +120,18 @@ $(document).ready(function() {
       $(this).parents("li").removeClass("text-muted");         
       selectedTask.completed = false;
     }
+  });
+  //-----------------------------
+
+  //Delete task item from list and array:
+  $("ul").on("click", "li button", function (){
+      let confirmation = confirm("Are you sure you want to delete this task item?");
+      if (confirmation) {
+        let taskID = $(this).siblings("span.hidden").text();
+        let index = taskList.findIndex(taskItem => taskItem.ID == taskID);
+        taskList.splice(index, 1);
+        $(this).parent().remove();
+      }
   });
   //-----------------------------
 

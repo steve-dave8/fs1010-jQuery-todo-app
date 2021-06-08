@@ -51,6 +51,22 @@ input::-moz-focus-inner {
   .activeSort {
     background-color: aquamarine;
   }
+
+  hr {
+    border: 1px solid;
+  }
+
+  aside > label {
+    display: block;
+    background-color: #acc2f9;
+    text-align: center;
+  }
+
+  aside > input {
+    display: block;
+    margin: 5px auto;
+    transform: scale(1.5);
+  }
   /*----------------------------------*/
   button {
     font-family: inherit;
@@ -198,9 +214,6 @@ input::-moz-focus-inner {
   }
 
 @media (max-width: 750px) {
-    aside {
-        font-size: 0.8rem;
-    }
     main {
         font-size: 1rem;
     }
