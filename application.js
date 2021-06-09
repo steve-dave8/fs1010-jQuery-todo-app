@@ -1,12 +1,14 @@
 //Global variables
-let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+let monthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; 
 let taskList = [
     {task: "Example 1", dueDate: "June 20, 2021", completed: false, ID: 1},
     {task: "Example 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae semper dolor. Sed venenatis ligula ac odio lacinia blandit. Nullam imperdiet ex sed ultrices aliquet. Morbi vel turpis lobortis, faucibus nibh non, malesuada nibh.", dueDate: "July 30, 2021", completed: false, ID: 2},
     {task: "Example 3", dueDate: "July 2, 2021", completed: true, ID: 3},
     {task: "Example 4. UI fire up your browser we need to build it so that it scales it's not hard guys. This proposal is a win-win situation which will cause a stellar paradigm shift, and produce a multi-fold increase in deliverables pulling teeth, yet re-inventing the wheel.", dueDate: "July 15, 2021", completed: false, ID: 4},
   ];
-  let id = 4;
+    /*The tasks in this array are just for demonstration purposes. 
+    Node could be used to save this data in a json file.*/
+let id = taskList.reduce((max, task) => task.ID > max ? task.ID : max, taskList[0].ID);
 //-----------------------------
 
 //Utility functions:
@@ -49,6 +51,15 @@ const reformatDate = (date) => {
   return revdate;
 };
 
+//Move completed tasks to end of taskList array if associated checkbox is checked:
+const moveCompletedToBottom = () => {
+    if ($("input#moveToBottom").prop("checked")) {
+        let completedList = taskList.filter(task => task.completed === true);
+        let toDoList = taskList.filter(task => task.completed === false);
+        taskList = toDoList.concat(completedList);
+    }
+};
+
 //Constructor for task object:
 class Task {
   constructor(task, dueDate, id) {
@@ -77,7 +88,7 @@ $(document).ready(function() {
   $("input#dueDate").attr("value", todaysDate);
   //-----------------------------
 
-  renderList(); //displays task list
+  renderList(); 
 
   //While in task input field, prevent pressing Enter key from submitting the form and refreshing the page:
   $("input#newTask").keydown(function (event){
@@ -98,18 +109,19 @@ $(document).ready(function() {
       $("input#newTask~span").addClass("alertInfo");
       return;
     }
-    $("aside > button").removeClass("activeSort");
+    $("button#sortDate").removeClass("activeSort");
+    $("button#sortByFirst").removeClass("activeSort");
     id++;
     let dueDate = $("input#dueDate").val();
     let reformattedDate = reformatDate(dueDate);
     let task = new Task(taskValue, reformattedDate, id);
-    taskList.push(task);     
+    taskList.unshift(task);     
     let taskDisplay = renderTask(taskValue, reformattedDate, id);
     $("ul").prepend(taskDisplay);
   });
   //-----------------------------
 
-  //Change style of task list item based on status from checkbox input:
+  //Change style of task list item based on status from checkbox input. 
   $("ul").on("click", "li input", function (){
     let taskID = $(this).parent().siblings("span.hidden").text();
     let selectedTask = taskList.find(taskItem => taskItem.ID == taskID);
@@ -119,6 +131,10 @@ $(document).ready(function() {
     } else {
       $(this).parents("li").removeClass("text-muted");         
       selectedTask.completed = false;
+    }
+    //Move the task to the bottom of the list if both this and the aside checkboxes are checked.
+    if ($(this).prop("checked") && $("input#moveToBottom").prop("checked")) {
+        $(this).parents("li").detach().appendTo("ul");
     }
   });
   //-----------------------------
@@ -141,6 +157,7 @@ $(document).ready(function() {
     $(this).addClass("activeSort");
     $("ul").empty();
     taskList.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
+    moveCompletedToBottom();
     renderList();
   });
   //-----------------------------
@@ -151,6 +168,7 @@ $(document).ready(function() {
     $(this).addClass("activeSort");
     $("ul").empty();
     taskList.sort((a, b) => a.ID - b.ID);
+    moveCompletedToBottom();
     renderList();
   });
   //-----------------------------
@@ -161,7 +179,18 @@ $(document).ready(function() {
     $(this).addClass("activeSort");
     $("ul").empty();
     taskList.sort((a, b) => b.ID - a.ID);
+    moveCompletedToBottom();
     renderList();
+  });
+  //-----------------------------
+
+  //If the aside checkbox is checked, then sort by completed tasks:
+  $("input#moveToBottom").click(function (){
+      moveCompletedToBottom();
+      if ($("input#moveToBottom").prop("checked")) {
+        $("ul").empty();
+        renderList();
+      }
   });
   //-----------------------------
 });
