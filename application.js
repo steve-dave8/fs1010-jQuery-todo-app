@@ -6,9 +6,9 @@ let taskList = [
     {task: "Example 3", dueDate: "July 2, 2021", completed: true, ID: 3},
     {task: "Example 4. UI fire up your browser we need to build it so that it scales it's not hard guys. This proposal is a win-win situation which will cause a stellar paradigm shift, and produce a multi-fold increase in deliverables pulling teeth, yet re-inventing the wheel.", dueDate: "July 15, 2021", completed: false, ID: 4},
   ];
-    /*The tasks in this array are just for demonstration purposes. 
-    Node could be used to save this data in a json file.*/
-let id = taskList.reduce((max, task) => task.ID > max ? task.ID : max, taskList[0].ID);
+  /*The tasks in this array are just for demonstration purposes. 
+  Node could be used to save this data in a json file.*/
+let id = taskList.reduce((max, task) => task.ID > max ? task.ID : max, taskList[0].ID); //id starts at the highest ID number from the taskList array.
 //-----------------------------
 
 //Utility functions:
@@ -51,7 +51,7 @@ const reformatDate = (date) => {
   return revdate;
 };
 
-//Move completed tasks to end of taskList array if associated checkbox is checked:
+//Move completed tasks to end of taskList array if the aside checkbox is checked:
 const moveCompletedToBottom = () => {
     if ($("input#moveToBottom").prop("checked")) {
         let completedList = taskList.filter(task => task.completed === true);
@@ -59,6 +59,25 @@ const moveCompletedToBottom = () => {
         taskList = toDoList.concat(completedList);
     }
 };
+
+const sortList = (selector) => {
+  $("aside > button").removeClass("activeSort");
+  $(selector).addClass("activeSort");
+  $("ul").empty();
+  switch (selector) {
+    case "button#sortDate":
+      taskList.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
+      break;
+    case "button#sortByFirst":
+      taskList.sort((a, b) => a.ID - b.ID);
+      break;
+    case "button#sortByLast":
+      taskList.sort((a, b) => b.ID - a.ID);
+      break;
+  }
+  moveCompletedToBottom();
+  renderList();
+}
 
 //Constructor for task object:
 class Task {
@@ -72,7 +91,7 @@ class Task {
 //end of utility functions----------------------------------------------------------
 
 $(document).ready(function() {
-  $("input#newTask").focus();
+  $("input#newTask").focus(); //when page loads focus on the input field
 
   //Set date input placeholder:
   let today = new Date();
@@ -88,7 +107,7 @@ $(document).ready(function() {
   $("input#dueDate").attr("value", todaysDate);
   //-----------------------------
 
-  renderList(); 
+  renderList(); //display tasks saved in the taskList array
 
   //While in task input field, prevent pressing Enter key from submitting the form and refreshing the page:
   $("input#newTask").keydown(function (event){
@@ -140,7 +159,7 @@ $(document).ready(function() {
   //-----------------------------
 
   //Delete task item from list and array:
-  $("ul").on("click", "li button", function (){
+  $("ul").on("click", "li > button", function (){
       let confirmation = confirm("Are you sure you want to delete this task item?");
       if (confirmation) {
         let taskID = $(this).siblings("span.hidden").text();
@@ -153,36 +172,18 @@ $(document).ready(function() {
 
   //Sort task items by due date:
   $("button#sortDate").on("click", function (){
-    $("aside > button").removeClass("activeSort");
-    $(this).addClass("activeSort");
-    $("ul").empty();
-    taskList.sort((a, b) => Date.parse(a.dueDate) - Date.parse(b.dueDate));
-    moveCompletedToBottom();
-    renderList();
+    sortList("button#sortDate");
   });
-  //-----------------------------
 
   //Sort task items by first added:
   $("button#sortByFirst").on("click", function (){
-    $("aside > button").removeClass("activeSort");
-    $(this).addClass("activeSort");
-    $("ul").empty();
-    taskList.sort((a, b) => a.ID - b.ID);
-    moveCompletedToBottom();
-    renderList();
+    sortList("button#sortByFirst");
   });
-  //-----------------------------
   
   //Sort task items by last added:
   $("button#sortByLast").on("click", function (){
-    $("aside > button").removeClass("activeSort");
-    $(this).addClass("activeSort");
-    $("ul").empty();
-    taskList.sort((a, b) => b.ID - a.ID);
-    moveCompletedToBottom();
-    renderList();
+    sortList("button#sortByLast");
   });
-  //-----------------------------
 
   //If the aside checkbox is checked, then sort by completed tasks:
   $("input#moveToBottom").click(function (){
@@ -192,5 +193,4 @@ $(document).ready(function() {
         renderList();
       }
   });
-  //-----------------------------
 });
